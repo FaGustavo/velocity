@@ -1,0 +1,3 @@
+# gerados pelo build.ps1 (o exe vai como anexo das releases)
+build/
+Velocity.exe
