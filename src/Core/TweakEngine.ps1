@@ -105,6 +105,7 @@ function Invoke-VTweak([string]$Id) {
     if ($t.Apply) {
         try { $null = & $t.Apply } catch { $errors += $_.Exception.Message }
     }
+    try { Set-VBackupEntry "#applied|$Id" $true -Overwrite } catch { }
     New-VTweakResult $t 'aplicado' $errors
 }
 
@@ -127,6 +128,7 @@ function Undo-VTweak([string]$Id) {
     if ($t.Revert) {
         try { $null = & $t.Revert } catch { $errors += $_.Exception.Message }
     }
+    if ($errors.Count -eq 0) { try { Remove-VBackupEntry "#applied|$Id" } catch { } }
     New-VTweakResult $t 'revertido' $errors
 }
 

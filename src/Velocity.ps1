@@ -5,13 +5,13 @@
 # ============================================================
 param([switch]$ShowConsole)
 
-$global:VelocityVersion = '1.1.1'
+$global:VelocityVersion = '1.2.0'
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 # --- Elevação ------------------------------------------------
 $principal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
 if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    $argList = "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
+    $argList = "-NoProfile -NoLogo -STA -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$PSCommandPath`""
     if ($ShowConsole) { $argList += ' -ShowConsole' }
     try { Start-Process powershell.exe -Verb RunAs -ArgumentList $argList } catch { }
     exit

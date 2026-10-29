@@ -44,9 +44,13 @@ if ($interfacesKey) {
     $interfacesKey.Close()
 }
 
+# Sem nenhuma interface com IP, a otimização não teria o que alterar e ficaria
+# "pendente" para sempre (o painel nunca chegaria a 100%). Nesse caso, nem aparece.
+if ($nagleEntries.Count -gt 0) {
 Register-VTweak @{
     Id = 'net.nagle'; Category = 'network'; Recommended = $true
     Name = 'Desativar algoritmo de Nagle'
     Description = 'Envia pacotes TCP imediatamente em vez de agrupá-los. Reduz a latência em jogos que usam TCP (MMOs, alguns MOBAs). Aplicado em todas as interfaces de rede ativas.'
     Registry = $nagleEntries
+}
 }

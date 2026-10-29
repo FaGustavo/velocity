@@ -21,11 +21,29 @@ function Get-VFolderSize([string]$Path) {
     return [int64]0
 }
 
+# Apaga o conteúdo de uma pasta sem nunca entrar em junctions/links simbólicos.
+# (No PowerShell 5.1, Remove-Item -Recurse segue junctions e apaga o DESTINO:
+#  um link em C:\Windows\Temp apontando para outra pasta seria esvaziado como admin.)
+function Remove-VFolderContent([string]$Path) {
+    foreach ($item in Get-ChildItem -LiteralPath $Path -Force -ErrorAction SilentlyContinue) {
+        try {
+            $isLink = ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0
+            if ($item.PSIsContainer) {
+                if (-not $isLink) { Remove-VFolderContent $item.FullName }
+                [IO.Directory]::Delete($item.FullName, $false)   # remove só o link ou a pasta já vazia
+            } else {
+                $item.Attributes = 'Normal'
+                [IO.File]::Delete($item.FullName)
+            }
+        } catch { }   # em uso ou sem permissão: ignora
+    }
+}
+
 # Esvazia uma pasta (ignora arquivos em uso) e retorna os bytes liberados
 function Clear-VFolder([string]$Path) {
-    if (-not (Test-Path -LiteralPath $Path)) { return [int64]0 }
+    if (-not $Path -or -not (Test-Path -LiteralPath $Path)) { return [int64]0 }
     $before = Get-VFolderSize $Path
-    Get-ChildItem -LiteralPath $Path -Force -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+    Remove-VFolderContent $Path
     return [int64][math]::Max(0, $before - (Get-VFolderSize $Path))
 }
 
@@ -48,9 +66,17 @@ function Get-VBcdValue([string]$Name) {
 function New-VRestorePoint {
     try {
         Enable-ComputerRestore -Drive "$env:SystemDrive\" -ErrorAction Stop
-        # Remove o limite de 1 ponto a cada 24h
-        Set-VRegValue 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore' 'SystemRestorePointCreationFrequency' 0 'DWord'
-        Checkpoint-Computer -Description 'Velocity - antes das otimizacoes' -RestorePointType 'MODIFY_SETTINGS' -ErrorAction Stop -WarningAction SilentlyContinue
+        # Remove o limite de 1 ponto a cada 24h só durante a criação e devolve o valor original depois
+        $srKey = 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore'
+        $srName = 'SystemRestorePointCreationFrequency'
+        $previous = Get-VRegValue $srKey $srName
+        Set-VRegValue $srKey $srName 0 'DWord'
+        try {
+            Checkpoint-Computer -Description 'Velocity - antes das otimizacoes' -RestorePointType 'MODIFY_SETTINGS' -ErrorAction Stop -WarningAction SilentlyContinue
+        } finally {
+            if ($previous.Exists) { Set-VRegValue $srKey $srName $previous.Value $previous.Kind }
+            else { Remove-VRegValue $srKey $srName }
+        }
         Write-VLog 'Ponto de restauração criado.'
         return @{ Success = $true; Message = 'Ponto de restauração do sistema criado.' }
     } catch {
@@ -61,7 +87,11 @@ function New-VRestorePoint {
 
 function Get-VSystemInfo {
     $cpu  = Get-CimInstance Win32_Processor | Select-Object -First 1
-    $gpus = @(Get-CimInstance Win32_VideoController | Where-Object { $_.Name -notmatch 'Basic|Remote|Virtual|Parsec|Indirect' })
+    # Placa dedicada primeiro: o WMI costuma listar a integrada (Intel HD/UHD) antes da NVIDIA/AMD
+    $gpus = @(Get-CimInstance Win32_VideoController |
+        Where-Object { $_.Name -notmatch 'Basic|Remote|Virtual|Parsec|Indirect' } |
+        Sort-Object @{ Expression = { if ($_.Name -match 'NVIDIA|GeForce|Quadro|RTX|Radeon (RX|Pro)|Arc\b') { 0 } elseif ($_.Name -match 'Intel|UHD|Iris|Radeon\(TM\) Graphics|Vega \d+ Graphics') { 2 } else { 1 } } },
+                     @{ Expression = { [int64]$_.AdapterRAM }; Descending = $true })
     $mem  = @(Get-CimInstance Win32_PhysicalMemory)
     $os   = Get-CimInstance Win32_OperatingSystem
     $nt   = 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
@@ -76,7 +106,7 @@ function Get-VSystemInfo {
     if ($gpus.Count -gt 0) {
         $gpu = $gpus[0].Name
         $gpuDetail = "Driver $($gpus[0].DriverVersion)"
-        if ($gpus.Count -gt 1) { $gpuDetail = 'Também: ' + (($gpus | Select-Object -Skip 1 | ForEach-Object { $_.Name }) -join ', ') }
+        if ($gpus.Count -gt 1) { $gpuDetail += ' · também: ' + (($gpus | Select-Object -Skip 1 | ForEach-Object { $_.Name }) -join ', ') }
     }
 
     $ramGb = [math]::Round((($mem | Measure-Object -Property Capacity -Sum).Sum) / 1GB)
@@ -94,6 +124,6 @@ function Get-VSystemInfo {
         Os          = $os.Caption -replace '^Microsoft\s+', ''
         OsDetail    = "$((Get-VRegValue $nt 'DisplayVersion').Value) · build $((Get-VRegValue $nt 'CurrentBuild').Value).$((Get-VRegValue $nt 'UBR').Value)"
         Power       = $plan
-        BackupCount = (Read-VBackup).Count
+        BackupCount = @((Read-VBackup).Keys | Where-Object { $_ -notlike '#*' }).Count
     }
 }

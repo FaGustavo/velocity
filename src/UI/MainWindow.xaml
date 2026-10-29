@@ -1,376 +1,398 @@
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Velocity · Game Optimizer" Width="1220" Height="800" MinWidth="1020" MinHeight="660"
+        Title="Velocity" Width="1180" Height="780" MinWidth="980" MinHeight="640"
         WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="CanResize"
         Background="{StaticResource BgBrush}" Foreground="{StaticResource TextBrush}"
-        FontFamily="{StaticResource UiFont}" FontSize="13" UseLayoutRounding="True">
+        FontFamily="{StaticResource UiFont}" FontSize="13" UseLayoutRounding="True"
+        TextOptions.TextFormattingMode="Ideal">
 
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="40" ResizeBorderThickness="6" GlassFrameThickness="0" CornerRadius="0" UseAeroCaptionButtons="False"/>
+        <WindowChrome CaptionHeight="52" ResizeBorderThickness="6" GlassFrameThickness="0" CornerRadius="0" UseAeroCaptionButtons="False"/>
     </WindowChrome.WindowChrome>
 
     <Grid x:Name="RootGrid">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
 
-        <!-- ===================== Barra lateral ===================== -->
-        <Border Grid.Column="0" Background="{StaticResource SidebarBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,0,1,0">
-            <DockPanel Margin="16,20,16,16">
-                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="8,0,0,14">
-                    <Border Width="40" Height="40" CornerRadius="11" Background="{StaticResource AccentGradient}">
-                        <TextBlock Text="&#xE945;" FontFamily="{StaticResource IconFont}" FontSize="19" Foreground="White"
-                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
-                    <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
-                        <TextBlock Text="Velocity" FontSize="19" FontWeight="Bold"/>
-                        <TextBlock Text="Game Optimizer" FontSize="11.5" Foreground="{StaticResource MutedBrush}"/>
-                    </StackPanel>
-                </StackPanel>
+        <!-- Tudo o que fica atrás dos diálogos (é desfocado quando um diálogo abre) -->
+        <Grid x:Name="ContentRoot">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="240"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-                <Border DockPanel.Dock="Bottom" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource LineBrush}"
-                        BorderThickness="1" CornerRadius="12" Padding="14,12" Margin="0,12,0,0">
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xEA18;" FontFamily="{StaticResource IconFont}" Foreground="{StaticResource OkBrush}" FontSize="14" VerticalAlignment="Center"/>
-                            <TextBlock Text="Modo administrador" FontWeight="SemiBold" Margin="8,0,0,0" VerticalAlignment="Center"/>
-                        </StackPanel>
-                        <TextBlock Text="Toda alteração tem backup automático e pode ser revertida." Foreground="{StaticResource MutedBrush}"
-                                   FontSize="11.5" TextWrapping="Wrap" Margin="0,6,0,0"/>
-                        <TextBlock x:Name="VersionText" Text="v1.0" Foreground="{StaticResource FaintBrush}" FontSize="11" Margin="0,8,0,0"/>
-                    </StackPanel>
-                </Border>
-
-                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                    <StackPanel x:Name="NavPanel"/>
-                </ScrollViewer>
-            </DockPanel>
-        </Border>
-
-        <!-- ===================== Área principal ===================== -->
-        <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="38"/>
-            </Grid.RowDefinitions>
-
-            <!-- Barra de título -->
-            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
-                <Button x:Name="BtnMin" Style="{StaticResource CaptionButton}" Content="&#xE921;" WindowChrome.IsHitTestVisibleInChrome="True"/>
-                <Button x:Name="BtnMaxRestore" Style="{StaticResource CaptionButton}" WindowChrome.IsHitTestVisibleInChrome="True">
-                    <TextBlock x:Name="MaxGlyph" Text="&#xE922;"/>
-                </Button>
-                <Button x:Name="BtnClose" Style="{StaticResource CloseButton}" Content="&#xE8BB;" WindowChrome.IsHitTestVisibleInChrome="True"/>
-            </StackPanel>
-
-            <Grid Grid.Row="1" Margin="36,0,28,0">
-
-                <!-- ============ Painel ============ -->
-                <ScrollViewer x:Name="PageDashboard" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                    <StackPanel Margin="0,0,10,24">
-                        <TextBlock Text="Painel" FontSize="28" FontWeight="Bold"/>
-                        <TextBlock Text="Visão geral do sistema e otimização com um clique." Foreground="{StaticResource MutedBrush}" FontSize="14" Margin="0,4,0,22"/>
-
-                        <Border Background="{StaticResource HeroGradient}" CornerRadius="16" BorderBrush="#2E2A55" BorderThickness="1" Padding="30,26">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="260"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel VerticalAlignment="Center" Margin="0,0,32,0">
-                                    <TextBlock Text="NÍVEL DE OTIMIZAÇÃO" FontSize="11" FontWeight="Bold" Foreground="{StaticResource MutedBrush}"/>
-                                    <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
-                                        <TextBlock x:Name="ScoreText" Text="0%" FontSize="56" FontWeight="Bold"/>
-                                        <Border x:Name="ScoreLabelBorder" CornerRadius="6" Padding="10,4" Margin="16,0,0,12" VerticalAlignment="Bottom" Background="#22FFFFFF">
-                                            <TextBlock x:Name="ScoreLabel" Text="—" FontWeight="SemiBold" FontSize="12"/>
-                                        </Border>
-                                    </StackPanel>
-                                    <TextBlock x:Name="ScoreDetail" Foreground="{StaticResource MutedBrush}" Margin="0,2,0,16"/>
-                                    <ProgressBar x:Name="ScoreBar" Style="{StaticResource ScoreBar}" Maximum="100" Value="0"/>
-                                </StackPanel>
-                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                    <Button x:Name="BtnOptimize" Style="{StaticResource PrimaryButton}" Padding="18,13" FontSize="14">
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="&#xE945;" FontFamily="{StaticResource IconFont}" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                            <TextBlock Text="Otimizar (recomendado)" VerticalAlignment="Center"/>
-                                        </StackPanel>
-                                    </Button>
-                                    <Button x:Name="BtnMaxMode" Style="{StaticResource SecondaryButton}" Margin="0,10,0,0">
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="&#xEC4A;" FontFamily="{StaticResource IconFont}" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                            <TextBlock Text="Modo máximo" VerticalAlignment="Center"/>
-                                        </StackPanel>
-                                    </Button>
-                                    <Button x:Name="BtnRevertAll" Style="{StaticResource GhostButton}" Margin="0,6,0,0" Content="Reverter todas as alterações"/>
-                                    <CheckBox x:Name="ChkRestore" Style="{StaticResource CheckStyle}" IsChecked="True" Margin="2,10,0,0"
-                                              Content="Criar ponto de restauração antes" FontSize="12"/>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
-
-                        <TextBlock Text="Seu sistema" FontSize="17" FontWeight="SemiBold" Margin="0,30,0,12"/>
-                        <UniformGrid Columns="3" Margin="0,0,-10,0">
-                            <Border Style="{StaticResource StatCard}">
-                                <StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="&#xE9D9;" FontFamily="{StaticResource IconFont}" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/>
-                                        <TextBlock Text="PROCESSADOR" FontSize="10.5" FontWeight="Bold" Foreground="{StaticResource MutedBrush}" Margin="8,0,0,0"/>
-                                    </StackPanel>
-                                    <TextBlock x:Name="StatCpu" Text="Carregando..." FontSize="14" FontWeight="SemiBold" Margin="0,10,0,0" TextTrimming="CharacterEllipsis"/>
-                                    <TextBlock x:Name="StatCpuSub" Foreground="{StaticResource MutedBrush}" FontSize="12" Margin="0,3,0,0" TextTrimming="CharacterEllipsis"/>
-                                </StackPanel>
-                            </Border>
-                            <Border Style="{StaticResource StatCard}">
-                                <StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="&#xE7F4;" FontFamily="{StaticResource IconFont}" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/>
-                                        <TextBlock Text="PLACA DE VÍDEO" FontSize="10.5" FontWeight="Bold" Foreground="{StaticResource MutedBrush}" Margin="8,0,0,0"/>
-                                    </StackPanel>
-                                    <TextBlock x:Name="StatGpu" Text="Carregando..." FontSize="14" FontWeight="SemiBold" Margin="0,10,0,0" TextTrimming="CharacterEllipsis"/>
-                                    <TextBlock x:Name="StatGpuSub" Foreground="{StaticResource MutedBrush}" FontSize="12" Margin="0,3,0,0" TextTrimming="CharacterEllipsis"/>
-                                </StackPanel>
-                            </Border>
-                            <Border Style="{StaticResource StatCard}">
-                                <StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="&#xE9F5;" FontFamily="{StaticResource IconFont}" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/>
-                                        <TextBlock Text="MEMÓRIA" FontSize="10.5" FontWeight="Bold" Foreground="{StaticResource MutedBrush}" Margin="8,0,0,0"/>
-                                    </StackPanel>
-                                    <TextBlock x:Name="StatRam" Text="Carregando..." FontSize="14" FontWeight="SemiBold" Margin="0,10,0,0" TextTrimming="CharacterEllipsis"/>
-                                    <TextBlock x:Name="StatRamSub" Foreground="{StaticResource MutedBrush}" FontSize="12" Margin="0,3,0,0" TextTrimming="CharacterEllipsis"/>
-                                </StackPanel>
-                            </Border>
-                            <Border Style="{StaticResource StatCard}">
-                                <StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="&#xE770;" FontFamily="{StaticResource IconFont}" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/>
-                                        <TextBlock Text="SISTEMA" FontSize="10.5" FontWeight="Bold" Foreground="{StaticResource MutedBrush}" Margin="8,0,0,0"/>
-                                    </StackPanel>
-                                    <TextBlock x:Name="StatOs" Text="Carregando..." FontSize="14" FontWeight="SemiBold" Margin="0,10,0,0" TextTrimming="CharacterEllipsis"/>
-                                    <TextBlock x:Name="StatOsSub" Foreground="{StaticResource MutedBrush}" FontSize="12" Margin="0,3,0,0" TextTrimming="CharacterEllipsis"/>
-                                </StackPanel>
-                            </Border>
-                            <Border Style="{StaticResource StatCard}">
-                                <StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="&#xE945;" FontFamily="{StaticResource IconFont}" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/>
-                                        <TextBlock Text="PLANO DE ENERGIA" FontSize="10.5" FontWeight="Bold" Foreground="{StaticResource MutedBrush}" Margin="8,0,0,0"/>
-                                    </StackPanel>
-                                    <TextBlock x:Name="StatPower" Text="Carregando..." FontSize="14" FontWeight="SemiBold" Margin="0,10,0,0" TextTrimming="CharacterEllipsis"/>
-                                    <TextBlock Text="Plano ativo agora" Foreground="{StaticResource MutedBrush}" FontSize="12" Margin="0,3,0,0"/>
-                                </StackPanel>
-                            </Border>
-                            <Border Style="{StaticResource StatCard}">
-                                <StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="&#xEA18;" FontFamily="{StaticResource IconFont}" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/>
-                                        <TextBlock Text="BACKUP" FontSize="10.5" FontWeight="Bold" Foreground="{StaticResource MutedBrush}" Margin="8,0,0,0"/>
-                                    </StackPanel>
-                                    <TextBlock x:Name="StatBackup" Text="Carregando..." FontSize="14" FontWeight="SemiBold" Margin="0,10,0,0"/>
-                                    <TextBlock Text="Valores originais guardados" Foreground="{StaticResource MutedBrush}" FontSize="12" Margin="0,3,0,0"/>
-                                </StackPanel>
-                            </Border>
-                        </UniformGrid>
-
-                        <TextBlock Text="Categorias" FontSize="17" FontWeight="SemiBold" Margin="0,20,0,12"/>
-                        <StackPanel x:Name="CategorySummary"/>
-                    </StackPanel>
-                </ScrollViewer>
-
-                <!-- ============ Categoria de otimizações ============ -->
-                <Grid x:Name="PageTweaks" Visibility="Collapsed">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Grid Margin="0,0,10,20">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock x:Name="CatTitle" FontSize="28" FontWeight="Bold"/>
-                                <Border CornerRadius="6" Padding="9,3" Margin="14,0,0,4" VerticalAlignment="Bottom" Background="{StaticResource Surface2Brush}">
-                                    <TextBlock x:Name="CatCount" FontSize="12" Foreground="{StaticResource MutedBrush}"/>
-                                </Border>
-                            </StackPanel>
-                            <TextBlock x:Name="CatDesc" Foreground="{StaticResource MutedBrush}" FontSize="14" Margin="0,4,0,0" TextWrapping="Wrap"/>
-                            <Border x:Name="CatWarning" Visibility="Collapsed" Background="#14F5B13D" BorderBrush="#40F5B13D" BorderThickness="1"
-                                    CornerRadius="10" Padding="14,11" Margin="0,16,0,0">
-                                <DockPanel>
-                                    <TextBlock Text="&#xE7BA;" FontFamily="{StaticResource IconFont}" Foreground="{StaticResource WarnBrush}" FontSize="15" Margin="0,1,12,0" VerticalAlignment="Top"/>
-                                    <TextBlock x:Name="CatWarningText" Foreground="#F3D9A4" TextWrapping="Wrap" LineHeight="19"/>
-                                </DockPanel>
-                            </Border>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Margin="24,8,0,0">
-                            <Button x:Name="BtnCatRevert" Style="{StaticResource GhostButton}" Content="Reverter categoria" Margin="0,0,8,0"/>
-                            <Button x:Name="BtnCatApply" Style="{StaticResource PrimaryButton}" Content="Aplicar recomendados"/>
-                        </StackPanel>
-                    </Grid>
-                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <StackPanel x:Name="TweakList" Margin="0,0,10,24"/>
-                    </ScrollViewer>
-                </Grid>
-
-                <!-- ============ Inicialização ============ -->
-                <Grid x:Name="PageStartup" Visibility="Collapsed">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Grid Margin="0,0,10,20">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Inicialização" FontSize="28" FontWeight="Bold"/>
-                                <Border CornerRadius="6" Padding="9,3" Margin="14,0,0,4" VerticalAlignment="Bottom" Background="{StaticResource Surface2Brush}">
-                                    <TextBlock x:Name="StartupCount" FontSize="12" Foreground="{StaticResource MutedBrush}"/>
-                                </Border>
-                            </StackPanel>
-                            <TextBlock Text="Programas que abrem com o Windows e ficam consumindo recursos enquanto você joga. Desativar não desinstala nada."
-                                       Foreground="{StaticResource MutedBrush}" FontSize="14" Margin="0,4,0,0" TextWrapping="Wrap"/>
-                        </StackPanel>
-                        <Button x:Name="BtnStartupRefresh" Grid.Column="1" Style="{StaticResource SecondaryButton}" VerticalAlignment="Bottom">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="&#xE72C;" FontFamily="{StaticResource IconFont}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                <TextBlock Text="Atualizar" VerticalAlignment="Center"/>
-                            </StackPanel>
+            <!-- ===================== Barra lateral ===================== -->
+            <Border Grid.Column="0" Background="{StaticResource SidebarBrush}" BorderBrush="{StaticResource SeparatorBrush}" BorderThickness="0,0,1,0">
+                <DockPanel Margin="12,0,12,14">
+                    <!-- Semáforo -->
+                    <StackPanel x:Name="TrafficLights" DockPanel.Dock="Top" Orientation="Horizontal" Margin="8,20,0,0" HorizontalAlignment="Left" Background="Transparent"
+                                WindowChrome.IsHitTestVisibleInChrome="True">
+                        <Button x:Name="BtnClose" Style="{StaticResource TrafficLight}" Background="#FF5F57" Content="&#xE8BB;" ToolTip="Fechar"/>
+                        <Button x:Name="BtnMin" Style="{StaticResource TrafficLight}" Background="#FEBC2E" Content="&#xE921;" ToolTip="Minimizar"/>
+                        <Button x:Name="BtnMaxRestore" Style="{StaticResource TrafficLight}" Background="#28C840" ToolTip="Maximizar">
+                            <TextBlock x:Name="MaxGlyph" Text="&#xE740;"/>
                         </Button>
-                    </Grid>
-                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <StackPanel x:Name="StartupList" Margin="0,0,10,24"/>
-                    </ScrollViewer>
-                </Grid>
-
-                <!-- ============ Ferramentas ============ -->
-                <Grid x:Name="PageTools" Visibility="Collapsed">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <StackPanel Margin="0,0,10,20">
-                        <TextBlock Text="Ferramentas" FontSize="28" FontWeight="Bold"/>
-                        <TextBlock Text="Ações de manutenção para rodar quando precisar." Foreground="{StaticResource MutedBrush}" FontSize="14" Margin="0,4,0,0"/>
                     </StackPanel>
-                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <StackPanel x:Name="ToolsList" Margin="0,0,10,24"/>
-                    </ScrollViewer>
-                </Grid>
-            </Grid>
 
-            <!-- Barra de status -->
-            <Border Grid.Row="2" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,1,0,0" Padding="36,0,16,0">
-                <DockPanel>
-                    <Button x:Name="BtnOpenLogs" DockPanel.Dock="Right" Style="{StaticResource GhostButton}" FontSize="12">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE8B7;" FontFamily="{StaticResource IconFont}" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                            <TextBlock Text="Logs e backup" VerticalAlignment="Center"/>
+                    <!-- Identidade -->
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="7,22,0,6">
+                        <Border Width="30" Height="30" CornerRadius="8" Background="{StaticResource AppIconBrush}">
+                            <TextBlock Text="&#xE945;" FontFamily="{StaticResource IconFont}" FontSize="15" Foreground="White"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="Velocity" FontFamily="{StaticResource DisplayFont}" FontSize="15" FontWeight="SemiBold"/>
+                            <TextBlock Text="Game Optimizer" FontSize="11" Foreground="{StaticResource SecondaryBrush}"/>
                         </StackPanel>
-                    </Button>
-                    <Border x:Name="RebootPill" DockPanel.Dock="Right" Visibility="Collapsed" CornerRadius="6" Padding="10,3" Margin="0,0,10,0"
-                            VerticalAlignment="Center" Background="#2222D3EE">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE777;" FontFamily="{StaticResource IconFont}" Foreground="#22D3EE" FontSize="11" VerticalAlignment="Center"/>
-                            <TextBlock Text="Reinicie o PC para concluir algumas alterações" Foreground="#22D3EE" FontSize="11.5" FontWeight="SemiBold" Margin="6,0,0,0"/>
-                        </StackPanel>
-                    </Border>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Ellipse x:Name="StatusDot" Width="7" Height="7" Fill="{StaticResource AccentBrush}" VerticalAlignment="Center"/>
-                        <TextBlock x:Name="StatusText" Text="Iniciando..." Foreground="{StaticResource MutedBrush}" FontSize="12" Margin="10,0,0,0"
-                                   VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
                     </StackPanel>
+
+                    <!-- Rodapé -->
+                    <StackPanel DockPanel.Dock="Bottom" Margin="8,10,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xEA18;" FontFamily="{StaticResource IconFont}" Foreground="{StaticResource OkBrush}" FontSize="12" VerticalAlignment="Center"/>
+                            <TextBlock Text="Administrador" FontSize="12" FontWeight="SemiBold" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="VersionText" Text="v1.0" Foreground="{StaticResource TertiaryBrush}" FontSize="12" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <TextBlock Text="Cada alteração tem backup e pode ser revertida." Foreground="{StaticResource SecondaryBrush}"
+                                   FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel x:Name="NavPanel"/>
+                    </ScrollViewer>
                 </DockPanel>
             </Border>
+
+            <!-- ===================== Área principal ===================== -->
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="52"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="34"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="1" Margin="36,0,22,0">
+
+                    <!-- ============ Painel ============ -->
+                    <ScrollViewer x:Name="PageDashboard" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="0,0,14,28" MaxWidth="900" HorizontalAlignment="Stretch">
+                            <TextBlock Text="Painel" Style="{StaticResource LargeTitle}"/>
+                            <TextBlock Text="Visão geral do sistema e otimização com um clique." Style="{StaticResource Subtitle}" Margin="0,4,0,22"/>
+
+                            <!-- Anel de otimização -->
+                            <Border Style="{StaticResource Group}" Padding="26,24">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="230"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Grid Width="136" Height="136" VerticalAlignment="Center">
+                                        <Ellipse Stroke="{StaticResource FillBrush}" StrokeThickness="14" Margin="0"/>
+                                        <Path x:Name="RingArc" Stroke="{StaticResource AccentBrush}" StrokeThickness="14"
+                                              StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock x:Name="ScoreText" Text="—" FontFamily="{StaticResource DisplayFont}" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="otimizado" FontSize="11" Foreground="{StaticResource SecondaryBrush}" HorizontalAlignment="Center" Margin="0,-3,0,0"/>
+                                        </StackPanel>
+                                        <ProgressBar x:Name="ScoreBar" Maximum="100" Value="0" Visibility="Collapsed"/>
+                                    </Grid>
+
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="28,0,24,0">
+                                        <TextBlock Text="Nível de otimização" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource SecondaryBrush}"/>
+                                        <TextBlock x:Name="ScoreLabel" Text="Analisando..." FontFamily="{StaticResource DisplayFont}" FontSize="22" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                                        <TextBlock x:Name="ScoreDetail" Foreground="{StaticResource SecondaryBrush}" TextWrapping="Wrap" Margin="0,6,0,0" LineHeight="18"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                        <Button x:Name="BtnOptimize" Style="{StaticResource PrimaryButton}" Padding="16,9">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="&#xE945;" FontFamily="{StaticResource IconFont}" FontSize="12" VerticalAlignment="Center" Margin="0,1,8,0"/>
+                                                <TextBlock Text="Otimizar" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+                                        <Button x:Name="BtnMaxMode" Style="{StaticResource SecondaryButton}" Margin="0,8,0,0" Padding="16,8" Content="Modo máximo..."/>
+                                        <Button x:Name="BtnRevertAll" Style="{StaticResource GhostButton}" Margin="0,6,0,0" Content="Reverter alterações do Velocity"/>
+                                        <CheckBox x:Name="ChkRestore" Style="{StaticResource CheckStyle}" IsChecked="True" Margin="2,8,0,0" HorizontalAlignment="Center"
+                                                  Content="Criar ponto de restauração antes" FontSize="12"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <!-- Seu sistema -->
+                            <TextBlock Text="Seu sistema" Style="{StaticResource SectionHeader}"/>
+                            <Border Style="{StaticResource Group}">
+                                <StackPanel x:Name="SystemList">
+                                    <Grid Margin="16,11">
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="38"/><ColumnDefinition Width="170"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                        <Border Width="26" Height="26" CornerRadius="6" Background="#0A84FF" HorizontalAlignment="Left">
+                                            <TextBlock Text="&#xE9D9;" FontFamily="{StaticResource IconFont}" FontSize="13" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock Grid.Column="1" Text="Processador" VerticalAlignment="Center"/>
+                                        <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                            <TextBlock x:Name="StatCpu" Text="Carregando..." HorizontalAlignment="Right" TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock x:Name="StatCpuSub" Foreground="{StaticResource SecondaryBrush}" FontSize="12" HorizontalAlignment="Right" TextTrimming="CharacterEllipsis"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    <Border Height="1" Background="{StaticResource SeparatorBrush}" Margin="54,0,0,0"/>
+                                    <Grid Margin="16,11">
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="38"/><ColumnDefinition Width="170"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                        <Border Width="26" Height="26" CornerRadius="6" Background="#30D158" HorizontalAlignment="Left">
+                                            <TextBlock Text="&#xE7F4;" FontFamily="{StaticResource IconFont}" FontSize="13" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock Grid.Column="1" Text="Placa de vídeo" VerticalAlignment="Center"/>
+                                        <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                            <TextBlock x:Name="StatGpu" Text="Carregando..." HorizontalAlignment="Right" TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock x:Name="StatGpuSub" Foreground="{StaticResource SecondaryBrush}" FontSize="12" HorizontalAlignment="Right" TextTrimming="CharacterEllipsis"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    <Border Height="1" Background="{StaticResource SeparatorBrush}" Margin="54,0,0,0"/>
+                                    <Grid Margin="16,11">
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="38"/><ColumnDefinition Width="170"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                        <Border Width="26" Height="26" CornerRadius="6" Background="#BF5AF2" HorizontalAlignment="Left">
+                                            <TextBlock Text="&#xE9F5;" FontFamily="{StaticResource IconFont}" FontSize="13" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock Grid.Column="1" Text="Memória" VerticalAlignment="Center"/>
+                                        <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                            <TextBlock x:Name="StatRam" Text="Carregando..." HorizontalAlignment="Right" TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock x:Name="StatRamSub" Foreground="{StaticResource SecondaryBrush}" FontSize="12" HorizontalAlignment="Right" TextTrimming="CharacterEllipsis"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    <Border Height="1" Background="{StaticResource SeparatorBrush}" Margin="54,0,0,0"/>
+                                    <Grid Margin="16,11">
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="38"/><ColumnDefinition Width="170"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                        <Border Width="26" Height="26" CornerRadius="6" Background="#8E8E93" HorizontalAlignment="Left">
+                                            <TextBlock Text="&#xE770;" FontFamily="{StaticResource IconFont}" FontSize="13" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock Grid.Column="1" Text="Sistema" VerticalAlignment="Center"/>
+                                        <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                            <TextBlock x:Name="StatOs" Text="Carregando..." HorizontalAlignment="Right" TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock x:Name="StatOsSub" Foreground="{StaticResource SecondaryBrush}" FontSize="12" HorizontalAlignment="Right" TextTrimming="CharacterEllipsis"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    <Border Height="1" Background="{StaticResource SeparatorBrush}" Margin="54,0,0,0"/>
+                                    <Grid Margin="16,11">
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="38"/><ColumnDefinition Width="170"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                        <Border Width="26" Height="26" CornerRadius="6" Background="#FF9F0A" HorizontalAlignment="Left">
+                                            <TextBlock Text="&#xE945;" FontFamily="{StaticResource IconFont}" FontSize="13" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock Grid.Column="1" Text="Plano de energia" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="StatPower" Grid.Column="2" Text="Carregando..." HorizontalAlignment="Right" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                    </Grid>
+                                    <Border Height="1" Background="{StaticResource SeparatorBrush}" Margin="54,0,0,0"/>
+                                    <Grid Margin="16,11">
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="38"/><ColumnDefinition Width="170"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                        <Border Width="26" Height="26" CornerRadius="6" Background="#64D2FF" HorizontalAlignment="Left">
+                                            <TextBlock Text="&#xEA18;" FontFamily="{StaticResource IconFont}" FontSize="13" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock Grid.Column="1" Text="Backup" VerticalAlignment="Center"/>
+                                        <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                            <TextBlock x:Name="StatBackup" Text="Carregando..." HorizontalAlignment="Right"/>
+                                            <TextBlock Text="valores originais guardados" Foreground="{StaticResource SecondaryBrush}" FontSize="12" HorizontalAlignment="Right"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Categorias -->
+                            <TextBlock Text="Categorias" Style="{StaticResource SectionHeader}"/>
+                            <Border Style="{StaticResource Group}" Padding="0,3">
+                                <StackPanel x:Name="CategorySummary"/>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <!-- ============ Categoria de otimizações ============ -->
+                    <Grid x:Name="PageTweaks" Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid Margin="0,0,14,20" MaxWidth="900">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock x:Name="CatTitle" Style="{StaticResource LargeTitle}"/>
+                                    <Border CornerRadius="9" Padding="9,2" Margin="12,0,0,6" VerticalAlignment="Bottom" Background="{StaticResource FillBrush}">
+                                        <TextBlock x:Name="CatCount" FontSize="12" Foreground="{StaticResource SecondaryBrush}"/>
+                                    </Border>
+                                </StackPanel>
+                                <TextBlock x:Name="CatDesc" Style="{StaticResource Subtitle}"/>
+                                <Border x:Name="CatWarning" Visibility="Collapsed" Background="{StaticResource WarnSoftBrush}" CornerRadius="10" Padding="14,11" Margin="0,16,0,0">
+                                    <DockPanel>
+                                        <TextBlock Text="&#xE7BA;" FontFamily="{StaticResource IconFont}" Foreground="{StaticResource WarnBrush}" FontSize="14" Margin="0,2,12,0" VerticalAlignment="Top"/>
+                                        <TextBlock x:Name="CatWarningText" Foreground="{StaticResource WarnTextBrush}" TextWrapping="Wrap" LineHeight="19"/>
+                                    </DockPanel>
+                                </Border>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Margin="24,8,0,0">
+                                <Button x:Name="BtnCatRevert" Style="{StaticResource GhostButton}" Content="Reverter categoria" Margin="0,0,10,0"/>
+                                <Button x:Name="BtnCatApply" Style="{StaticResource PrimaryButton}" Content="Aplicar recomendados"/>
+                            </StackPanel>
+                        </Grid>
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <Border Style="{StaticResource Group}" Margin="0,0,14,28" MaxWidth="900" VerticalAlignment="Top">
+                                <StackPanel x:Name="TweakList"/>
+                            </Border>
+                        </ScrollViewer>
+                    </Grid>
+
+                    <!-- ============ Inicialização ============ -->
+                    <Grid x:Name="PageStartup" Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid Margin="0,0,14,20" MaxWidth="900">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Inicialização" Style="{StaticResource LargeTitle}"/>
+                                    <Border CornerRadius="9" Padding="9,2" Margin="12,0,0,6" VerticalAlignment="Bottom" Background="{StaticResource FillBrush}">
+                                        <TextBlock x:Name="StartupCount" FontSize="12" Foreground="{StaticResource SecondaryBrush}"/>
+                                    </Border>
+                                </StackPanel>
+                                <TextBlock Style="{StaticResource Subtitle}"
+                                           Text="Programas que abrem com o Windows e ficam consumindo recursos enquanto você joga. Desativar não desinstala nada."/>
+                            </StackPanel>
+                            <Button x:Name="BtnStartupRefresh" Grid.Column="1" Style="{StaticResource SecondaryButton}" VerticalAlignment="Top" Margin="24,8,0,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE72C;" FontFamily="{StaticResource IconFont}" FontSize="12" VerticalAlignment="Center" Margin="0,1,8,0"/>
+                                    <TextBlock Text="Atualizar" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <Border Style="{StaticResource Group}" Margin="0,0,14,28" MaxWidth="900" VerticalAlignment="Top">
+                                <StackPanel x:Name="StartupList"/>
+                            </Border>
+                        </ScrollViewer>
+                    </Grid>
+
+                    <!-- ============ Ferramentas ============ -->
+                    <Grid x:Name="PageTools" Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Margin="0,0,14,20" MaxWidth="900">
+                            <TextBlock Text="Ferramentas" Style="{StaticResource LargeTitle}"/>
+                            <TextBlock Text="Ações de manutenção para rodar quando precisar." Style="{StaticResource Subtitle}"/>
+                        </StackPanel>
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <Border Style="{StaticResource Group}" Margin="0,0,14,28" MaxWidth="900" VerticalAlignment="Top">
+                                <StackPanel x:Name="ToolsList"/>
+                            </Border>
+                        </ScrollViewer>
+                    </Grid>
+                </Grid>
+
+                <!-- Barra de status -->
+                <Border Grid.Row="2" BorderBrush="{StaticResource SeparatorBrush}" BorderThickness="0,1,0,0" Padding="36,0,14,0">
+                    <DockPanel>
+                        <Button x:Name="BtnOpenLogs" DockPanel.Dock="Right" Style="{StaticResource GhostButton}" FontSize="12" Content="Logs e backup"/>
+                        <Border x:Name="RebootPill" DockPanel.Dock="Right" Visibility="Collapsed" CornerRadius="9" Padding="10,2" Margin="0,0,10,0"
+                                VerticalAlignment="Center" Background="{StaticResource WarnSoftBrush}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE777;" FontFamily="{StaticResource IconFont}" Foreground="{StaticResource WarnBrush}" FontSize="11" VerticalAlignment="Center"/>
+                                <TextBlock Text="Reinicie o PC para concluir" Foreground="{StaticResource WarnTextBrush}" FontSize="11.5" FontWeight="SemiBold" Margin="6,0,0,0"/>
+                            </StackPanel>
+                        </Border>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Ellipse x:Name="StatusDot" Width="7" Height="7" Fill="{StaticResource AccentBrush}" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="StatusText" Text="Iniciando..." Foreground="{StaticResource SecondaryBrush}" FontSize="12" Margin="9,0,0,0"
+                                       VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+            </Grid>
         </Grid>
 
-        <!-- ===================== Termo de consentimento (1º uso) ===================== -->
-        <Grid x:Name="ConsentOverlay" Grid.ColumnSpan="2" Visibility="Collapsed" Background="{StaticResource BgBrush}">
+        <!-- ===================== Boas-vindas / termo (1º uso) ===================== -->
+        <Grid x:Name="ConsentOverlay" Visibility="Collapsed" Background="{StaticResource BgBrush}">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                <Border Width="660" Background="{StaticResource SurfaceBrush}" CornerRadius="18" BorderBrush="{StaticResource LineBrush}" BorderThickness="1"
-                        Padding="36,32" Margin="0,48" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Border Width="46" Height="46" CornerRadius="12" Background="{StaticResource AccentGradient}">
-                                <TextBlock Text="&#xE945;" FontFamily="{StaticResource IconFont}" FontSize="22" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <StackPanel Margin="16,0,0,0" VerticalAlignment="Center">
-                                <TextBlock Text="Antes de começar" FontSize="24" FontWeight="Bold"/>
-                                <TextBlock Text="Leia com atenção — o Velocity faz otimizações profundas no Windows." Foreground="{StaticResource MutedBrush}" FontSize="13.5" Margin="0,2,0,0"/>
-                            </StackPanel>
-                        </StackPanel>
+                <StackPanel Width="580" Margin="0,64,0,40" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Border Width="72" Height="72" CornerRadius="17" Background="{StaticResource AppIconBrush}" HorizontalAlignment="Center">
+                        <Border.Effect><DropShadowEffect BlurRadius="24" ShadowDepth="6" Direction="270" Opacity="0.3" Color="Black"/></Border.Effect>
+                        <TextBlock Text="&#xE945;" FontFamily="{StaticResource IconFont}" FontSize="34" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="Bem-vindo ao Velocity" Style="{StaticResource LargeTitle}" HorizontalAlignment="Center" Margin="0,22,0,0"/>
+                    <TextBlock Text="Antes de começar, veja o que o Velocity pode fazer no seu Windows." Style="{StaticResource Subtitle}"
+                               HorizontalAlignment="Center" TextAlignment="Center" Margin="0,6,0,0"/>
 
-                        <TextBlock Text="COM PERMISSÃO DE ADMINISTRADOR, O VELOCITY PODE" FontSize="11" FontWeight="Bold" Foreground="{StaticResource MutedBrush}" Margin="0,28,0,10"/>
-                        <StackPanel x:Name="ConsentList"/>
+                    <TextBlock Text="Com permissão de administrador, o Velocity pode" Style="{StaticResource SectionHeader}"/>
+                    <Border Style="{StaticResource Group}"><StackPanel x:Name="ConsentList"/></Border>
 
-                        <TextBlock Text="COMO VOCÊ ESTÁ PROTEGIDO" FontSize="11" FontWeight="Bold" Foreground="{StaticResource MutedBrush}" Margin="0,22,0,10"/>
-                        <StackPanel x:Name="ConsentSafety"/>
+                    <TextBlock Text="Como você está protegido" Style="{StaticResource SectionHeader}"/>
+                    <Border Style="{StaticResource Group}"><StackPanel x:Name="ConsentSafety"/></Border>
 
-                        <Border Background="#14F5B13D" BorderBrush="#40F5B13D" BorderThickness="1" CornerRadius="10" Padding="14,11" Margin="0,22,0,0">
-                            <TextBlock Foreground="#F3D9A4" TextWrapping="Wrap" LineHeight="19"
-                                       Text="Nenhuma otimização é aplicada sozinha: você escolhe o que ativar. Os ganhos variam de PC para PC. Ao continuar, você assume a responsabilidade pelas alterações feitas no seu sistema."/>
-                        </Border>
+                    <Border Background="{StaticResource WarnSoftBrush}" CornerRadius="10" Padding="14,11" Margin="0,20,0,0">
+                        <TextBlock Foreground="{StaticResource WarnTextBrush}" TextWrapping="Wrap" LineHeight="19"
+                                   Text="Nenhuma otimização é aplicada sozinha: você escolhe o que ativar. Os ganhos variam de PC para PC. Ao continuar, você assume a responsabilidade pelas alterações feitas no seu sistema."/>
+                    </Border>
 
-                        <CheckBox x:Name="ChkConsent" Style="{StaticResource CheckStyle}" Margin="2,22,0,0" FontSize="13.5" Foreground="{StaticResource TextBrush}"
-                                  Content="Li e entendo que o Velocity fará alterações profundas no Windows."/>
+                    <CheckBox x:Name="ChkConsent" Style="{StaticResource CheckStyle}" Margin="4,20,0,0" FontSize="13" Foreground="{StaticResource TextBrush}"
+                              Content="Li e entendo que o Velocity fará alterações profundas no Windows."/>
 
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,26,0,0">
-                            <Button x:Name="BtnConsentExit" Style="{StaticResource SecondaryButton}" Content="Sair" Margin="0,0,10,0" MinWidth="90"/>
-                            <Button x:Name="BtnConsentAccept" Style="{StaticResource PrimaryButton}" Content="Aceitar e continuar" IsEnabled="False"/>
-                        </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,22,0,0">
+                        <Button x:Name="BtnConsentExit" Style="{StaticResource SecondaryButton}" Content="Sair" Margin="0,0,10,0" MinWidth="90"/>
+                        <Button x:Name="BtnConsentAccept" Style="{StaticResource PrimaryButton}" Content="Continuar" MinWidth="110" IsEnabled="False"/>
                     </StackPanel>
-                </Border>
+                </StackPanel>
             </ScrollViewer>
         </Grid>
 
-        <!-- ===================== Sobreposição: processando ===================== -->
-        <Grid x:Name="BusyOverlay" Grid.ColumnSpan="2" Visibility="Collapsed" Background="#C00A0B0F">
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Grid Width="48" Height="48" HorizontalAlignment="Center">
-                    <Ellipse Stroke="#262934" StrokeThickness="4"/>
-                    <Path Stroke="{StaticResource AccentGradient}" StrokeThickness="4" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
-                          Data="M 24,2 A 22,22 0 0 1 46,24" RenderTransformOrigin="0.5,0.5">
-                        <Path.RenderTransform>
-                            <RotateTransform Angle="0"/>
-                        </Path.RenderTransform>
-                        <Path.Triggers>
-                            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
-                                <BeginStoryboard>
-                                    <Storyboard RepeatBehavior="Forever">
-                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)" From="0" To="360" Duration="0:0:0.9"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
-                        </Path.Triggers>
-                    </Path>
-                </Grid>
-                <TextBlock x:Name="BusyText" Text="Trabalhando..." FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,20,0,0"/>
-                <TextBlock Text="Isso pode levar alguns segundos. Não feche o programa." Foreground="{StaticResource MutedBrush}" HorizontalAlignment="Center" Margin="0,6,0,0"/>
-            </StackPanel>
+        <!-- ===================== Processando ===================== -->
+        <Grid x:Name="BusyOverlay" Visibility="Collapsed" Opacity="0" Background="{StaticResource ScrimBrush}">
+            <Border x:Name="BusyCard" Width="320" Background="{StaticResource ElevatedBrush}" CornerRadius="14" Padding="28,26"
+                    BorderBrush="{StaticResource GroupBorderBrush}" BorderThickness="1"
+                    HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
+                <Border.RenderTransform><ScaleTransform ScaleX="0.94" ScaleY="0.94"/></Border.RenderTransform>
+                <Border.Effect><DropShadowEffect BlurRadius="40" ShadowDepth="10" Direction="270" Opacity="0.35" Color="Black"/></Border.Effect>
+                <StackPanel>
+                    <!-- Indicador de atividade de 8 raios, girando em passos como o do macOS -->
+                    <Grid x:Name="Spinner" Width="30" Height="30" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5">
+                        <Grid.RenderTransform><RotateTransform x:Name="SpinnerRotate" Angle="0"/></Grid.RenderTransform>
+                        <Rectangle Width="3" Height="8" RadiusX="1.5" RadiusY="1.5" Fill="{StaticResource SecondaryBrush}" VerticalAlignment="Top" Opacity="1"/>
+                        <Rectangle Width="3" Height="8" RadiusX="1.5" RadiusY="1.5" Fill="{StaticResource SecondaryBrush}" VerticalAlignment="Top" Opacity="0.88" RenderTransformOrigin="0.5,1.875"><Rectangle.RenderTransform><RotateTransform Angle="-45"/></Rectangle.RenderTransform></Rectangle>
+                        <Rectangle Width="3" Height="8" RadiusX="1.5" RadiusY="1.5" Fill="{StaticResource SecondaryBrush}" VerticalAlignment="Top" Opacity="0.76" RenderTransformOrigin="0.5,1.875"><Rectangle.RenderTransform><RotateTransform Angle="-90"/></Rectangle.RenderTransform></Rectangle>
+                        <Rectangle Width="3" Height="8" RadiusX="1.5" RadiusY="1.5" Fill="{StaticResource SecondaryBrush}" VerticalAlignment="Top" Opacity="0.64" RenderTransformOrigin="0.5,1.875"><Rectangle.RenderTransform><RotateTransform Angle="-135"/></Rectangle.RenderTransform></Rectangle>
+                        <Rectangle Width="3" Height="8" RadiusX="1.5" RadiusY="1.5" Fill="{StaticResource SecondaryBrush}" VerticalAlignment="Top" Opacity="0.52" RenderTransformOrigin="0.5,1.875"><Rectangle.RenderTransform><RotateTransform Angle="-180"/></Rectangle.RenderTransform></Rectangle>
+                        <Rectangle Width="3" Height="8" RadiusX="1.5" RadiusY="1.5" Fill="{StaticResource SecondaryBrush}" VerticalAlignment="Top" Opacity="0.40" RenderTransformOrigin="0.5,1.875"><Rectangle.RenderTransform><RotateTransform Angle="-225"/></Rectangle.RenderTransform></Rectangle>
+                        <Rectangle Width="3" Height="8" RadiusX="1.5" RadiusY="1.5" Fill="{StaticResource SecondaryBrush}" VerticalAlignment="Top" Opacity="0.28" RenderTransformOrigin="0.5,1.875"><Rectangle.RenderTransform><RotateTransform Angle="-270"/></Rectangle.RenderTransform></Rectangle>
+                        <Rectangle Width="3" Height="8" RadiusX="1.5" RadiusY="1.5" Fill="{StaticResource SecondaryBrush}" VerticalAlignment="Top" Opacity="0.16" RenderTransformOrigin="0.5,1.875"><Rectangle.RenderTransform><RotateTransform Angle="-315"/></Rectangle.RenderTransform></Rectangle>
+                    </Grid>
+                    <TextBlock x:Name="BusyText" Text="Trabalhando..." FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" Margin="0,18,0,0"/>
+                    <TextBlock Text="Isso pode levar alguns segundos." Foreground="{StaticResource SecondaryBrush}" FontSize="12" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
         </Grid>
 
-        <!-- ===================== Sobreposição: diálogo ===================== -->
-        <Grid x:Name="DialogOverlay" Grid.ColumnSpan="2" Visibility="Collapsed" Background="#B30A0B0F">
-            <Border Width="480" Background="{StaticResource SurfaceBrush}" CornerRadius="16" BorderBrush="{StaticResource LineBrush}" BorderThickness="1"
-                    Padding="28,26" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="48" ShadowDepth="0" Opacity="0.55" Color="Black"/>
-                </Border.Effect>
+        <!-- ===================== Diálogo (alerta no estilo macOS) ===================== -->
+        <Grid x:Name="DialogOverlay" Visibility="Collapsed" Opacity="0" Background="{StaticResource ScrimBrush}">
+            <Border x:Name="DialogCard" Width="420" Background="{StaticResource ElevatedBrush}" CornerRadius="14" Padding="26,24,26,20"
+                    BorderBrush="{StaticResource GroupBorderBrush}" BorderThickness="1"
+                    HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
+                <Border.RenderTransform><ScaleTransform ScaleX="0.94" ScaleY="0.94"/></Border.RenderTransform>
+                <Border.Effect><DropShadowEffect BlurRadius="48" ShadowDepth="12" Direction="270" Opacity="0.38" Color="Black"/></Border.Effect>
                 <StackPanel>
-                    <TextBlock x:Name="DialogTitle" FontSize="19" FontWeight="Bold" TextWrapping="Wrap"/>
-                    <ScrollViewer MaxHeight="340" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,10,0,24">
-                        <TextBlock x:Name="DialogText" Foreground="{StaticResource MutedBrush}" FontSize="13.5" TextWrapping="Wrap" LineHeight="21"/>
+                    <Border x:Name="DialogIconTile" Width="52" Height="52" CornerRadius="13" Background="{StaticResource AppIconBrush}" HorizontalAlignment="Center">
+                        <TextBlock x:Name="DialogIcon" Text="&#xE945;" FontFamily="{StaticResource IconFont}" FontSize="24" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock x:Name="DialogTitle" FontFamily="{StaticResource DisplayFont}" FontSize="16" FontWeight="Bold" TextWrapping="Wrap"
+                               TextAlignment="Center" HorizontalAlignment="Center" Margin="0,14,0,0"/>
+                    <ScrollViewer MaxHeight="330" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,8,0,22">
+                        <TextBlock x:Name="DialogText" Foreground="{StaticResource SecondaryBrush}" FontSize="13" TextWrapping="Wrap" LineHeight="19"/>
                     </ScrollViewer>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button x:Name="DialogCancel" Style="{StaticResource SecondaryButton}" Content="Cancelar" Margin="0,0,10,0"/>
-                        <Button x:Name="DialogOk" Style="{StaticResource PrimaryButton}" Content="OK" MinWidth="96"/>
-                    </StackPanel>
+                    <UniformGrid Rows="1">
+                        <Button x:Name="DialogCancel" Style="{StaticResource SecondaryButton}" Content="Cancelar" Margin="0,0,5,0" IsCancel="True"/>
+                        <Button x:Name="DialogOk" Style="{StaticResource PrimaryButton}" Content="OK" Margin="5,0,0,0" IsDefault="True"/>
+                    </UniformGrid>
                 </StackPanel>
             </Border>
         </Grid>
